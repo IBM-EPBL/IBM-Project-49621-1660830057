@@ -1,3 +1,8 @@
+#Team ID	: PNT2022PMID49597
+#Project Name	: PLASMA DONOR APPLICATION
+#Name	: SUSWIN P
+#Roll Number	: 950019104049
+
 from flask import Flask, render_template, request, redirect, url_for, session
 import ibm_db
 import re
@@ -57,41 +62,6 @@ def register_donor():
         msg='Please fill out the form !'
     return render_template('reg1.html',msg=msg)
 
-@app.route("/register-recipient",methods=['GET', 'POST'])
-def register_recipient():
-    msg=''
-    if request.method=='POST':
-        Name =request.form['Name']
-        email =request.form['email']
-        password =request.form['password']
-        Address =request.form['Address']
-        phone = request.form['phone']
-        sql="SELECT * FROM recip WHERE name =?"
-        stmt= ibm_db.prepare(conn,sql)
-        ibm_db.bind_param(stmt,1, Name)
-        ibm_db.execute(stmt)
-        account =ibm_db.fetch_assoc(stmt)
-        print(account)
-        if account:
-            msg='Account already exists !'
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            msg='Invalid email address !'
-        elif not re.match(r'[A-Za-z0-9]+', Name):
-            msg='name must contain only characters and numbers !'
-        else:
-            insert_sql="INSERT INTO recip VALUES (?, ?, ?, ?, ?)"
-            prep_stmt=ibm_db.prepare(conn,insert_sql)
-            ibm_db.bind_param(prep_stmt,1,Name)
-            ibm_db.bind_param(prep_stmt,2,email)
-            ibm_db.bind_param(prep_stmt,3,password)
-            ibm_db.bind_param(prep_stmt,4,Address)
-            ibm_db.bind_param(prep_stmt,5,phone)
-            ibm_db.execute(prep_stmt)
-            msg='You have successfully registered !'
-    elif request.method=='POST':
-        msg='Please fill out the form !'
-    return render_template('reg2.html',msg=msg)
-
 @app.route("/login",methods=['GET', 'POST'])
 def login_donor():
     global userid
@@ -119,34 +89,6 @@ def login_donor():
         else:
             msg='Incorrect username / password !'
     return render_template('login1.html',msg=msg)
-
-@app.route("/login2",methods=['GET', 'POST'])
-def login_recipient():
-    global userid
-    msg=''
-
-    if request.method=='POST':
-        email =request.form['email']
-        password =request.form['password']
-        sql="SELECT * FROM recip WHERE email =? AND password=?"
-        stmt=ibm_db.prepare(conn,sql)
-        ibm_db.bind_param(stmt,1, email)
-        ibm_db.bind_param(stmt,2, password)
-        ibm_db.execute(stmt)
-        account =ibm_db.fetch_assoc(stmt)
-        print(account)
-        if account:
-            session['loggedin'] =True
-            session['id'] = account['EMAIL']
-            userid= account['EMAIL']
-            session['email'] = account['EMAIL']
-            msg='Logged in successfully !'
-
-            msg='Logged in successfully !'
-            return render_template('home.html',msg=msg)
-        else:
-            msg='Incorrect username / password !'
-    return render_template('login2.html',msg=msg)
 
 if __name__ =='__main__':
     #app.run(host='0.0.0.0')
