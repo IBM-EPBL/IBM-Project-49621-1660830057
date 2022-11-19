@@ -1,0 +1,18 @@
+<div>
+    <div>Name</div>
+       
+            {% for val in data %}
+            <div>{{val}}</div>
+            {% endfor %} 
+
+	    {% if state == "SENT" %}
+	    <div>Email Sent Successfully </div>
+	    {% else %}
+	    <form action="/send_email" method="post">
+		    <input hidden name="blood" value="{{blood}}"/>	    
+	    <button type="submit">Send</button> 
+	    </form>
+	    {% endif %}
+        </tbody>
+    </table>
+</div>

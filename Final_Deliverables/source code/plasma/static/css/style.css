@@ -1,0 +1,16 @@
+.hero{
+    width:100vw;
+    height: 100vh;
+    background: color #f8f8f8;
+    margin: 0;
+}
+
+.input_text{   
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0px;
+    border: bottom 1px; 
+    border-color: black;
+    margin-bottom: 20px;
+}
